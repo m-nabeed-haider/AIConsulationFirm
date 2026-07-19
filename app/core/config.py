@@ -24,14 +24,20 @@ class Settings(BaseSettings):
         app_env: Deployment environment identifier (e.g. "local",
             "development", "production").
         log_level: Minimum severity level for log messages.
-        ollama_host: Base URL of the local Ollama server. Reserved for
-            future modules; unused in Module 0.
-        default_model: Name of the default LLM to use. Reserved for
-            future modules; unused in Module 0.
+        ollama_host: Base URL of the local Ollama server. Used by
+            :class:`app.llm.client.OllamaClient`.
+        default_model: Name of the default LLM to use when a caller
+            does not explicitly request one. Used by
+            :class:`app.llm.client.OllamaClient`.
+        request_timeout: Maximum time, in seconds, to wait for a
+            response from the Ollama server before raising a timeout
+            error. Used by :class:`app.llm.client.OllamaClient`.
         database_url: Connection string for the application database.
-            Reserved for future modules; unused in Module 0.
+            Reserved for future modules; unused in Module 0 and
+            Module 1.
         vector_db_path: Filesystem path for the vector database.
-            Reserved for future modules; unused in Module 0.
+            Reserved for future modules; unused in Module 0 and
+            Module 1.
     """
 
     model_config = SettingsConfigDict(
@@ -46,7 +52,8 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO")
 
     ollama_host: str = Field(default="http://localhost:11434")
-    default_model: str = Field(default="")
+    default_model: str = Field(default="llama3")
+    request_timeout: float = Field(default=30.0, gt=0)
 
     database_url: str = Field(default="")
     vector_db_path: str = Field(default="")

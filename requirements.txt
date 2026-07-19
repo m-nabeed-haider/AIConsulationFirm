@@ -4,7 +4,9 @@ pydantic
 pydantic-settings
 python-dotenv
 loguru
+httpx
 pytest
+pytest-mock
 black
 isort
 mypy
