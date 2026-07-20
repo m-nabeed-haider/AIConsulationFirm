@@ -20,8 +20,12 @@ from pathlib import Path
 from loguru import logger
 
 from app.core.config import get_settings
-from app.core.constants import (LOG_DIRECTORY_NAME, LOG_FILE_NAME,
-                                LOG_RETENTION_PERIOD, LOG_ROTATION_SIZE)
+from app.core.constants import (
+    LOG_DIRECTORY_NAME,
+    LOG_FILE_NAME,
+    LOG_RETENTION_PERIOD,
+    LOG_ROTATION_SIZE,
+)
 
 _CONSOLE_FORMAT: str = (
     "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "

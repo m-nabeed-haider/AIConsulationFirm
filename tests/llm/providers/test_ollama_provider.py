@@ -83,7 +83,9 @@ class TestHealthCheckDelegation:
     def test_delegates_to_client_and_returns_result(self) -> None:
         """health_check() should return exactly what the client returns."""
         mock_client = make_mock_client()
-        expected = HealthStatus(is_available=True, message="Ollama server is available.")
+        expected = HealthStatus(
+            is_available=True, message="Ollama server is available."
+        )
         mock_client.health_check.return_value = expected
         provider = OllamaProvider(client=mock_client)
 

@@ -13,8 +13,12 @@ import pytest
 
 from app.core.config import Settings
 from app.llm.client import OllamaClient
-from app.llm.exceptions import (LLMError, ModelNotFoundError,
-                                OllamaConnectionError, OllamaTimeoutError)
+from app.llm.exceptions import (
+    LLMError,
+    ModelNotFoundError,
+    OllamaConnectionError,
+    OllamaTimeoutError,
+)
 from app.llm.models import GenerationResult, HealthStatus, ModelList
 
 TEST_HOST = "http://testserver"

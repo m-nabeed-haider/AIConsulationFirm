@@ -12,8 +12,12 @@ import httpx
 
 from app.core.config import Settings, get_settings
 from app.core.logger import logger
-from app.llm.exceptions import (LLMError, ModelNotFoundError,
-                                OllamaConnectionError, OllamaTimeoutError)
+from app.llm.exceptions import (
+    LLMError,
+    ModelNotFoundError,
+    OllamaConnectionError,
+    OllamaTimeoutError,
+)
 from app.llm.models import GenerationResult, HealthStatus, ModelInfo, ModelList
 
 _HEALTH_CHECK_PATH: str = "/"

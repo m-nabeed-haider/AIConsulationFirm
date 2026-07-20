@@ -1,12 +1,16 @@
-fastapi
-uvicorn
+# ==========================
+# Core
+# ==========================
+httpx
+loguru
 pydantic
 pydantic-settings
 python-dotenv
-loguru
-httpx
+
+# ==========================
+# Development
+# ==========================
 pytest
-pytest-mock
 black
 isort
 mypy
