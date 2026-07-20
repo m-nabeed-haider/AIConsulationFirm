@@ -32,12 +32,16 @@ class Settings(BaseSettings):
         request_timeout: Maximum time, in seconds, to wait for a
             response from the Ollama server before raising a timeout
             error. Used by :class:`app.llm.client.OllamaClient`.
+        llm_provider: Identifier of the LLM provider to use (e.g.
+            ``"ollama"``). Used by :class:`app.llm.factory.LLMFactory`
+            to select the concrete :class:`app.llm.base.BaseLLM`
+            implementation.
         database_url: Connection string for the application database.
-            Reserved for future modules; unused in Module 0 and
-            Module 1.
+            Reserved for future modules; unused in Module 0 through
+            Module 2.
         vector_db_path: Filesystem path for the vector database.
-            Reserved for future modules; unused in Module 0 and
-            Module 1.
+            Reserved for future modules; unused in Module 0 through
+            Module 2.
     """
 
     model_config = SettingsConfigDict(
@@ -54,6 +58,8 @@ class Settings(BaseSettings):
     ollama_host: str = Field(default="http://localhost:11434")
     default_model: str = Field(default="llama3")
     request_timeout: float = Field(default=30.0, gt=0)
+
+    llm_provider: str = Field(default="ollama")
 
     database_url: str = Field(default="")
     vector_db_path: str = Field(default="")

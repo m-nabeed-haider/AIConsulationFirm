@@ -1,0 +1,53 @@
+"""Unit tests for :class:`app.llm.base.BaseLLM`.
+
+These tests verify only the abstract contract itself: that BaseLLM
+cannot be instantiated directly, and that a subclass implementing all
+required methods can be. Behavior of concrete providers is tested in
+``tests/llm/providers/``.
+"""
+
+import pytest
+
+from app.llm.base import BaseLLM
+from app.llm.models import HealthStatus, ModelList
+from app.llm.response import LLMResponse
+
+
+def test_base_llm_cannot_be_instantiated() -> None:
+    """BaseLLM is abstract and must not be directly instantiable."""
+    with pytest.raises(TypeError):
+        BaseLLM()  # type: ignore[abstract]
+
+
+def test_subclass_missing_methods_cannot_be_instantiated() -> None:
+    """A subclass that does not implement every abstract method still fails."""
+
+    class IncompleteLLM(BaseLLM):
+        def generate(self, prompt: str) -> LLMResponse:
+            return LLMResponse(text="stub", model="stub", duration=0.0)
+
+        # health_check and list_models intentionally left unimplemented.
+
+    with pytest.raises(TypeError):
+        IncompleteLLM()  # type: ignore[abstract]
+
+
+def test_complete_subclass_can_be_instantiated() -> None:
+    """A subclass implementing every abstract method can be instantiated."""
+
+    class CompleteLLM(BaseLLM):
+        def generate(self, prompt: str) -> LLMResponse:
+            return LLMResponse(text=f"echo: {prompt}", model="stub", duration=0.0)
+
+        def health_check(self) -> HealthStatus:
+            return HealthStatus(is_available=True, message="ok")
+
+        def list_models(self) -> ModelList:
+            return ModelList(models=[])
+
+    instance = CompleteLLM()
+
+    assert isinstance(instance, BaseLLM)
+    assert instance.generate("hi").text == "echo: hi"
+    assert instance.health_check().is_available is True
+    assert instance.list_models().models == []
