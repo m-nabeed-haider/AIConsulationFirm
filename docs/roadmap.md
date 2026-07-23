@@ -6,9 +6,10 @@ what has been built, what is in progress, and what remains.
 
 ## Current Phase
 
-**Phase: LLM Integration — Module 2 complete.**
-Next up: extending the LLM abstraction layer's consumers as the
-platform moves toward Module 3.
+**Phase: Shared Contracts — Module 3 complete.**
+Next up: the platform now has a stable data vocabulary (`Message`,
+`Task`, `AgentInfo`); future modules can begin building agents,
+planning, and orchestration logic on top of it.
 
 ## Module Status
 
@@ -17,13 +18,13 @@ platform moves toward Module 3.
 | 0 | Project Foundation | ✅ Complete | Project scaffold, configuration, logging, tests. |
 | 1 | Ollama Client | ✅ Complete | `OllamaClient`: the HTTP integration layer with a local Ollama server. |
 | 2 | LLM Abstraction Layer | ✅ Complete | `BaseLLM`, `LLMFactory`, `LLMResponse`, and `OllamaProvider` decouple the application from any specific LLM backend. |
-| 3 | *Future* | ⬜ Not started | To be scoped. |
+| 3 | Shared Data Models | ✅ Complete | `Message`, `Task`, `AgentInfo`, and supporting enums — the typed contracts every future subsystem communicates through. |
 | 4 | *Future* | ⬜ Not started | To be scoped. |
 | 5 | *Future* | ⬜ Not started | To be scoped. |
 | 6 | *Future* | ⬜ Not started | To be scoped. |
 | 7 | *Future* | ⬜ Not started | To be scoped. |
 
-Exact module boundaries and ordering beyond Module 2 are subject to
+Exact module boundaries and ordering beyond Module 3 are subject to
 change as the project evolves; see
 [`docs/10_Future_Work.md`](docs/10_Future_Work.md) for open-ended
 notes on future direction.
@@ -64,7 +65,28 @@ See [`docs/modules/02_LLM_Abstraction.md`](docs/modules/02_LLM_Abstraction.md)
 and [`docs/adr/ADR-003-LLM-Abstraction.md`](docs/adr/ADR-003-LLM-Abstraction.md)
 for full details.
 
-## Explicit Non-Goals (as of Module 2)
+### Module 3 — Shared Data Models ✅
+
+Introduced `app/schemas`, the package defining the typed contracts
+every future subsystem (agents, planners, supervisors, workflows, and
+the eventual API layer) must use to communicate, instead of raw
+dictionaries or strings:
+
+- `Message` — a unit of communication between two parties.
+- `Task` — a unit of work, with lifecycle status and priority.
+- `AgentInfo` — an agent's identity and role.
+- `TaskStatus`, `TaskPriority`, `MessageType`, `AgentRole` — the
+  enums constraining the above models' fields.
+
+All models are Pydantic-based, auto-generate their `id` (UUID) and
+timestamp fields, and contain no AI logic, persistence, or business
+behavior — contracts only.
+
+See [`docs/modules/03_Shared_Data_Models.md`](docs/modules/03_Shared_Data_Models.md)
+and [`docs/adr/ADR-004-Shared-Contracts.md`](docs/adr/ADR-004-Shared-Contracts.md)
+for full details.
+
+## Explicit Non-Goals (as of Module 3)
 
 The following remain unimplemented, reserved for future modules, and
 should not be assumed present when building on top of this codebase:
