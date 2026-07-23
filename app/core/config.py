@@ -36,12 +36,15 @@ class Settings(BaseSettings):
             ``"ollama"``). Used by :class:`app.llm.factory.LLMFactory`
             to select the concrete :class:`app.llm.base.BaseLLM`
             implementation.
+        prompt_dir: Filesystem path to the directory containing prompt
+            templates, either absolute or relative to the project
+            root. Used by :class:`app.prompting.loader.PromptLoader`.
         database_url: Connection string for the application database.
             Reserved for future modules; unused in Module 0 through
-            Module 2.
+            Module 4.
         vector_db_path: Filesystem path for the vector database.
             Reserved for future modules; unused in Module 0 through
-            Module 2.
+            Module 4.
     """
 
     model_config = SettingsConfigDict(
@@ -60,6 +63,8 @@ class Settings(BaseSettings):
     request_timeout: float = Field(default=30.0, gt=0)
 
     llm_provider: str = Field(default="ollama")
+
+    prompt_dir: str = Field(default="prompts")
 
     database_url: str = Field(default="")
     vector_db_path: str = Field(default="")

@@ -6,10 +6,10 @@ what has been built, what is in progress, and what remains.
 
 ## Current Phase
 
-**Phase: Shared Contracts — Module 3 complete.**
-Next up: the platform now has a stable data vocabulary (`Message`,
-`Task`, `AgentInfo`); future modules can begin building agents,
-planning, and orchestration logic on top of it.
+**Phase: Prompt Management — Module 4 complete.**
+Next up: with typed contracts (Module 3) and externalized, renderable
+prompts (Module 4) in place, future modules can begin building actual
+agents on top of `BaseLLM` and `PromptManager`.
 
 ## Module Status
 
@@ -19,12 +19,12 @@ planning, and orchestration logic on top of it.
 | 1 | Ollama Client | ✅ Complete | `OllamaClient`: the HTTP integration layer with a local Ollama server. |
 | 2 | LLM Abstraction Layer | ✅ Complete | `BaseLLM`, `LLMFactory`, `LLMResponse`, and `OllamaProvider` decouple the application from any specific LLM backend. |
 | 3 | Shared Data Models | ✅ Complete | `Message`, `Task`, `AgentInfo`, and supporting enums — the typed contracts every future subsystem communicates through. |
-| 4 | *Future* | ⬜ Not started | To be scoped. |
+| 4 | Prompt Management System | ✅ Complete | `PromptManager`, `PromptLoader`, and `PromptRenderer` — prompts live as external Markdown templates rendered via Jinja2, never embedded in Python source. |
 | 5 | *Future* | ⬜ Not started | To be scoped. |
 | 6 | *Future* | ⬜ Not started | To be scoped. |
 | 7 | *Future* | ⬜ Not started | To be scoped. |
 
-Exact module boundaries and ordering beyond Module 3 are subject to
+Exact module boundaries and ordering beyond Module 4 are subject to
 change as the project evolves; see
 [`docs/10_Future_Work.md`](docs/10_Future_Work.md) for open-ended
 notes on future direction.
@@ -86,7 +86,31 @@ See [`docs/modules/03_Shared_Data_Models.md`](docs/modules/03_Shared_Data_Models
 and [`docs/adr/ADR-004-Shared-Contracts.md`](docs/adr/ADR-004-Shared-Contracts.md)
 for full details.
 
-## Explicit Non-Goals (as of Module 3)
+### Module 4 — Prompt Management System ✅
+
+Introduced `app/prompting`, separating prompt engineering from
+application logic entirely:
+
+- `PromptLoader` — locates and reads `.md` template files from the
+  configured prompt directory (`prompts/`, organized into `system/`,
+  `user/`, and `shared/`).
+- `PromptRenderer` — renders template text via Jinja2, using
+  `StrictUndefined` so a missing variable raises immediately rather
+  than rendering blank.
+- `PromptManager` — the public facade composing both, adding template
+  existence checks, listing, and in-memory caching of raw template
+  source. Never communicates with an LLM.
+- `PromptError`, `PromptNotFoundError`, `PromptRenderingError` — a
+  dedicated exception hierarchy, mirroring Module 1's `LLMError`
+  pattern.
+- Three example system templates ship with this module:
+  `prompts/system/research.md`, `planner.md`, `reviewer.md`.
+
+See [`docs/modules/04_Prompt_Manager.md`](docs/modules/04_Prompt_Manager.md)
+and [`docs/adr/ADR-005-Prompt-Management.md`](docs/adr/ADR-005-Prompt-Management.md)
+for full details.
+
+## Explicit Non-Goals (as of Module 4)
 
 The following remain unimplemented, reserved for future modules, and
 should not be assumed present when building on top of this codebase:
@@ -94,7 +118,6 @@ should not be assumed present when building on top of this codebase:
 - LangGraph / multi-agent orchestration
 - Agents of any kind (Supervisor, Research Analyst, etc.)
 - Memory systems (short-term, long-term, or vector-based)
-- Prompt templates / prompt management
 - Tool calling
 - Retrieval-augmented generation (RAG)
 - FastAPI routes / HTTP API layer
