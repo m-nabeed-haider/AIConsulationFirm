@@ -369,7 +369,9 @@ class TestDependencyInjection:
         assert agent._llm is mock_llm
         assert agent._prompt_manager is mock_pm
 
-    def test_base_module_does_not_construct_concrete_llm_or_prompt_manager(self) -> None:
+    def test_base_module_does_not_construct_concrete_llm_or_prompt_manager(
+        self,
+    ) -> None:
         """app.agents.base should not import OllamaClient, OllamaProvider, or LLMFactory."""
         import inspect
 

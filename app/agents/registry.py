@@ -44,7 +44,9 @@ class AgentRegistry:
             raise AgentError(f"An agent named '{name}' is already registered.")
 
         self._agents[name] = agent
-        logger.info("Registered agent '{}' (role='{}').", name, agent.metadata.role.value)
+        logger.info(
+            "Registered agent '{}' (role='{}').", name, agent.metadata.role.value
+        )
 
     def unregister(self, name: str) -> None:
         """Remove a previously registered agent.
