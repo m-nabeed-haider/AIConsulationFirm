@@ -6,10 +6,11 @@ what has been built, what is in progress, and what remains.
 
 ## Current Phase
 
-**Phase: Prompt Management — Module 4 complete.**
-Next up: with typed contracts (Module 3) and externalized, renderable
-prompts (Module 4) in place, future modules can begin building actual
-agents on top of `BaseLLM` and `PromptManager`.
+**Phase: Base Agent Framework — Module 5 complete.**
+Next up: with `BaseAgent` in place, future modules can implement
+concrete agents (Research, Planner, Reviewer, Writer, ...) on top of
+it, and eventually a Supervisor to coordinate them via
+`AgentRegistry`.
 
 ## Module Status
 
@@ -20,11 +21,11 @@ agents on top of `BaseLLM` and `PromptManager`.
 | 2 | LLM Abstraction Layer | ✅ Complete | `BaseLLM`, `LLMFactory`, `LLMResponse`, and `OllamaProvider` decouple the application from any specific LLM backend. |
 | 3 | Shared Data Models | ✅ Complete | `Message`, `Task`, `AgentInfo`, and supporting enums — the typed contracts every future subsystem communicates through. |
 | 4 | Prompt Management System | ✅ Complete | `PromptManager`, `PromptLoader`, and `PromptRenderer` — prompts live as external Markdown templates rendered via Jinja2, never embedded in Python source. |
-| 5 | *Future* | ⬜ Not started | To be scoped. |
+| 5 | Base Agent Framework | ✅ Complete | `BaseAgent`, `AgentContext`, and `AgentRegistry` — the reusable orchestration lifecycle (validate → render → generate → respond) every future concrete agent inherits from. |
 | 6 | *Future* | ⬜ Not started | To be scoped. |
 | 7 | *Future* | ⬜ Not started | To be scoped. |
 
-Exact module boundaries and ordering beyond Module 4 are subject to
+Exact module boundaries and ordering beyond Module 5 are subject to
 change as the project evolves; see
 [`docs/10_Future_Work.md`](docs/10_Future_Work.md) for open-ended
 notes on future direction.
@@ -110,13 +111,42 @@ See [`docs/modules/04_Prompt_Manager.md`](docs/modules/04_Prompt_Manager.md)
 and [`docs/adr/ADR-005-Prompt-Management.md`](docs/adr/ADR-005-Prompt-Management.md)
 for full details.
 
-## Explicit Non-Goals (as of Module 4)
+### Module 5 — Base Agent Framework ✅
+
+Introduced `app/agents`, the reusable orchestration base every future
+concrete agent inherits from:
+
+- `BaseAgent` — a fixed execution lifecycle (validate task → build
+  prompt context → render prompt → call the LLM → return a
+  `Message`), built entirely on dependency-injected `BaseLLM` and
+  `PromptManager` instances. Never constructs either itself.
+- `AgentContext` — a lightweight, transient per-execution context
+  (explicitly not memory).
+- `AgentRegistry` — an in-memory `register()`/`unregister()`/`get()`/
+  `list_agents()` lookup of constructed agents by name, for later use
+  by a Supervisor.
+- `AgentError`, `AgentExecutionError`, `InvalidTaskError` — a
+  dedicated exception hierarchy, wrapping failures from the
+  orchestrated prompt and LLM layers.
+
+No concrete agents (Research, Planner, Reviewer, Writer, etc.) are
+implemented yet — this module provides only the reusable base they
+will build on.
+
+See [`docs/modules/05_Base_Agent.md`](docs/modules/05_Base_Agent.md)
+and [`docs/adr/ADR-006-Base-Agent.md`](docs/adr/ADR-006-Base-Agent.md)
+for full details.
+
+## Explicit Non-Goals (as of Module 5)
 
 The following remain unimplemented, reserved for future modules, and
 should not be assumed present when building on top of this codebase:
 
 - LangGraph / multi-agent orchestration
-- Agents of any kind (Supervisor, Research Analyst, etc.)
+- A Supervisor, or any multi-agent coordination
+- Concrete business agents (Research Analyst, Project Manager,
+  Reviewer, etc.) — only the reusable `BaseAgent` they will inherit
+  from exists so far
 - Memory systems (short-term, long-term, or vector-based)
 - Tool calling
 - Retrieval-augmented generation (RAG)
